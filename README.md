@@ -64,7 +64,7 @@ Prepare sound file (optional):
 Place sound.wav in the same folder as the script.
 
 Compile to EXE:
-pyinstaller --onefile --noconsole --name "NorthOppositt" --add-data "sound.wav;." --hidden-import=_cffi_backend --collect-all cryptography app.py
+pyinstaller --onefile --noconsole --name "NorthOppositt" --add-data "sound.wav;." --hidden-import=_cffi_backend --collect-all cryptography start.py
 
 Run in virtual machine:
 Copy NorthOppositt.exe to a Windows VM
@@ -146,7 +146,7 @@ pip install cryptography keyboard pycaw comtypes psutil pyinstaller
 Положи sound.wav в папку со скриптом.
 
 Скомпилируй в EXE:
-pyinstaller --onefile --noconsole --name "NorthOppositt" --add-data "sound.wav;." --hidden-import=_cffi_backend --collect-all cryptography app.py
+pyinstaller --onefile --noconsole --name "NorthOppositt" --add-data "sound.wav;." --hidden-import=_cffi_backend --collect-all cryptography start.py
 
 Запусти в виртуальной машине:
 Скопируй NorthOppositt.exe в виртуалку с Windows
