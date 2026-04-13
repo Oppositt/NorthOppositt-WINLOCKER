@@ -1,4 +1,4 @@
-**#NORTH OPPOSITT**
+#NORTH OPPOSITT
 
 North Oppositt Ransomware v3.0
 
