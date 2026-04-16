@@ -4,7 +4,7 @@ import sys
 import winreg as reg
 import threading
 import keyboard
-# эти библиотеки обязательны для работы. Джек, проверь, что они стоят.
+# эти библиотеки обязательны для работы.
 try:
     from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
     from comtypes import CLSCTX_ALL
